@@ -20,7 +20,7 @@ Route::middleware(['auth'])->prefix('dashboard')->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    Route::resource('locations', LocationController::class)->except('show');
+    Route::resource('locations', LocationController::class);
 });
 
 Route::middleware('auth')->group(function () {

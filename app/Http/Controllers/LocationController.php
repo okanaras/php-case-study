@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreLocationRequest;
+use App\Http\Requests\UpdateLocationRequest;
 use App\Models\Location;
-use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class LocationController extends Controller
 {
@@ -12,7 +14,11 @@ class LocationController extends Controller
      */
     public function index()
     {
-        //        dd('resource index');
+        $locations = Location::query()->latest()->paginate(10);
+
+        return Inertia::render('Location/Index', [
+            'locations' => $locations,
+        ]);
     }
 
     /**
@@ -20,15 +26,24 @@ class LocationController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('Location/Create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreLocationRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $location = Location::create([
+            'name' => $validated['name'],
+            'latitude' => $validated['latitude'],
+            'longitude' => $validated['longitude'],
+            'color_hex' => $validated['color_hex'],
+        ]);
+
+        return redirect()->route('locations.edit', $location)->with('success', 'Location created successfully.');
     }
 
     /**
@@ -36,7 +51,9 @@ class LocationController extends Controller
      */
     public function show(Location $location)
     {
-        //
+        return Inertia::render('Location/Show', [
+            'location' => $location,
+        ]);
     }
 
     /**
@@ -44,15 +61,26 @@ class LocationController extends Controller
      */
     public function edit(Location $location)
     {
-        //
+        return Inertia::render('Location/Edit', [
+            'location' => $location,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Location $location)
+    public function update(UpdateLocationRequest $request, Location $location)
     {
-        //
+        $validated = $request->validated();
+
+        $location->update([
+            'name' => $validated['name'],
+            'latitude' => $validated['latitude'],
+            'longitude' => $validated['longitude'],
+            'color_hex' => $validated['color_hex'],
+        ]);
+
+        return redirect()->route('locations.edit', $location)->with('success', 'Location updated successfully.');
     }
 
     /**
@@ -60,6 +88,8 @@ class LocationController extends Controller
      */
     public function destroy(Location $location)
     {
-        //
+        $location->delete();
+
+        return redirect()->route('locations.index')->with('success', 'Location deleted successfully.');
     }
 }
