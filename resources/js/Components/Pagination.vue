@@ -13,12 +13,17 @@ const props = defineProps({
 });
 
 const changePage = (url) => {
-    if (url) {
-        router.visit(url, {
-            preserveScroll: true,
-            preserveState: props.preserveState,
-        });
+    if (!url) return;
+
+    const isProd = import.meta.env.PROD;
+    if (isProd && url.startsWith('http://')) {
+        url = url.replace(/^http:/, 'https:');
     }
+
+    router.visit(url, {
+        preserveScroll: true,
+        preserveState: props.preserveState,
+    });
 };
 </script>
 
