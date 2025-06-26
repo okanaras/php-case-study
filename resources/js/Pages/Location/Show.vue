@@ -2,6 +2,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head } from '@inertiajs/vue3';
 import BackListButton from '@/Components/Buttons/BackListButton.vue';
+import GoogleMap from '@/Components/GoogleMap.vue';
 
 const props = defineProps({
     location: {
@@ -74,6 +75,16 @@ const props = defineProps({
                                         {{ props.location.longitude }}
                                     </p>
                                 </div>
+                            </div>
+                            <div
+                                class="mt-2 flex items-center justify-center rounded-lg bg-white p-8 shadow-md dark:bg-gray-900"
+                            >
+                                <GoogleMap
+                                    :latitude="Number(props.location.latitude)"
+                                    :longitude="
+                                        Number(props.location.longitude)
+                                    "
+                                />
                             </div>
                         </div>
                     </div>

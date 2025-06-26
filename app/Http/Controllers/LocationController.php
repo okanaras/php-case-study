@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CheckRouteRequest;
 use App\Http\Requests\StoreLocationRequest;
 use App\Http\Requests\UpdateLocationRequest;
 use App\Models\Location;
+use App\Services\LocationService;
 use Inertia\Inertia;
 
 class LocationController extends Controller
 {
+    public function __construct(public LocationService $locationService) {}
+
     /**
      * Display a listing of the resource.
      */
@@ -91,5 +95,34 @@ class LocationController extends Controller
         $location->delete();
 
         return redirect()->route('locations.index')->with('success', 'Location deleted successfully.');
+    }
+
+    public function route(CheckRouteRequest $request)
+    {
+        $validated = $request->validated();
+
+        $nearestLocation = $this->locationService->findNearestLocation($validated['latitude'], $validated['longitude']);
+
+        /**
+         * Db raw versiyonu.
+         * Buyuk veri setlerinde daha performansli olabilir. Sql sorgulu hesaplamasi da php tarafindaki hesaplamasi da yapay zekadan alindi.
+         */
+        // $nearestLocation = $this->locationService->findNearestLocationDBRaw($validated['latitude'], $validated['longitude']);
+
+        if (! $nearestLocation) {
+            return response()->json(['message' => 'No locations found.'], 404);
+        }
+
+        $distance = round($nearestLocation['distance'], 2).' km';
+
+        unset($nearestLocation['distance']);
+
+        $response = [
+            'from' => ['latitude' => $validated['latitude'], 'longitude' => $validated['longitude']],
+            'to' => $nearestLocation,
+            'distance' => $distance,
+        ];
+
+        return response()->json($response);
     }
 }

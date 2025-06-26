@@ -24,6 +24,7 @@ const form = useForm({
 const submit = () => {
     form.put(route('locations.update', props.location), {
         preserveState: false,
+        preserveScroll: true,
     });
 };
 </script>
@@ -81,13 +82,14 @@ const submit = () => {
                                     <TextInput
                                         id="latitude"
                                         type="number"
+                                        class="mt-1 block w-full rounded border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
+                                        v-model="form.latitude"
                                         step="0.00000001"
                                         min="-90"
                                         max="90"
-                                        class="mt-1 block w-full rounded border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
-                                        v-model="form.latitude"
-                                        required
+                                        placeholder="41.0082"
                                         autocomplete="off"
+                                        required
                                     />
                                     <InputError
                                         class="mt-2"
@@ -103,13 +105,14 @@ const submit = () => {
                                     <TextInput
                                         id="longitude"
                                         type="number"
+                                        class="mt-1 block w-full rounded border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
+                                        v-model="form.longitude"
                                         step="0.00000001"
                                         min="-180"
                                         max="180"
-                                        class="mt-1 block w-full rounded border-gray-300 bg-gray-50 focus:border-indigo-500 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800"
-                                        v-model="form.longitude"
-                                        required
+                                        placeholder="34.6482"
                                         autocomplete="off"
+                                        required
                                     />
                                     <InputError
                                         class="mt-2"
